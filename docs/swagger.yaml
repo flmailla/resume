@@ -1,0 +1,369 @@
+basePath: /resume/v1
+definitions:
+  ErrorResponsNotFounde:
+    properties:
+      code:
+        example: 404
+        type: integer
+      error:
+        example: User not found
+        type: string
+      message:
+        example: The requested profile could not be found
+        type: string
+    type: object
+  models.Education:
+    properties:
+      description:
+        type: string
+      id:
+        format: int64
+        type: integer
+      issued:
+        type: string
+      profile:
+        $ref: '#/definitions/models.Profile'
+      title:
+        type: string
+    type: object
+  models.Experience:
+    properties:
+      company:
+        type: string
+      description:
+        type: string
+      endDate:
+        type: string
+      id:
+        format: int64
+        type: integer
+      location:
+        type: string
+      profile:
+        $ref: '#/definitions/models.Profile'
+      skills:
+        items:
+          $ref: '#/definitions/models.Skill'
+        type: array
+      startDate:
+        type: string
+      title:
+        type: string
+    type: object
+  models.Licence:
+    properties:
+      expires:
+        type: string
+      id:
+        format: int64
+        type: integer
+      issuedAt:
+        type: string
+      issuer:
+        type: string
+      licenceType:
+        $ref: '#/definitions/models.LicenceType'
+      profile:
+        $ref: '#/definitions/models.Profile'
+      title:
+        type: string
+    type: object
+  models.LicenceType:
+    enum:
+    - Licnce
+    - Certification
+    type: string
+    x-enum-varnames:
+    - LICENCE
+    - CERTIFICATION
+  models.Profile:
+    properties:
+      about:
+        type: string
+      birthDate:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      headline:
+        type: string
+      id:
+        format: int64
+        type: integer
+      lastName:
+        type: string
+      location:
+        type: string
+      postalCode:
+        format: int32
+        type: integer
+      pronoun:
+        type: string
+    type: object
+  models.Skill:
+    description: Skill information
+    properties:
+      id:
+        example: 1
+        type: integer
+      name:
+        example: git
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: florent@maillard.icu
+    name: flmailla
+  description: Displays my resume main sections as APIs
+  title: Resume API
+  version: 1.0.0
+paths:
+  /experience/{experience_id}/skills:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all the skills for a given experience
+      parameters:
+      - description: Experience ID
+        in: path
+        name: experience_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Skill'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+      summary: Get the experience skills
+      tags:
+      - Skills
+      - Experience
+  /profiles/{profile_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the profil information
+      parameters:
+      - description: Profile ID
+        in: path
+        name: profile_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Profile'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+      security:
+      - OAuth2Application: []
+      summary: Get a profile
+      tags:
+      - Profile
+  /profiles/{profile_id}/educations:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all the education lines for a given profile
+      parameters:
+      - description: Profile ID
+        in: path
+        name: profile_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Education'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+      security:
+      - OAuth2Application: []
+      summary: Get a profile educations
+      tags:
+      - Education
+      - Profile
+  /profiles/{profile_id}/experiences:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all the experiences for a given profile
+      parameters:
+      - description: Profile ID
+        in: path
+        name: profile_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Experience'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+      security:
+      - OAuth2Application: []
+      summary: Get a profile experiences
+      tags:
+      - Experience
+      - Profile
+  /profiles/{profile_id}/licences:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all the Licences for a given profile
+      parameters:
+      - description: Profile ID
+        in: path
+        name: profile_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Licence'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+      security:
+      - OAuth2Application: []
+      summary: Get a profile Licences
+      tags:
+      - Licence
+      - Profile
+  /profiles/{profile_id}/skills:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all the skills for a given profile
+      parameters:
+      - description: Profile ID
+        in: path
+        name: profile_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Skill'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+      summary: Get a profile skills
+      tags:
+      - Skills
+      - Profile
+  /skills:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all the skills in the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Skill'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponsNotFounde'
+      summary: Get all the skills
+      tags:
+      - Skills
+securityDefinitions:
+  OAuth2Application:
+    flow: application
+    scopes:
+      admin: Grants read and write access to administrative information
+      write: Grants write access
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"
