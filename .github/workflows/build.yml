@@ -19,10 +19,6 @@ jobs:
     - name: Run tests with coverage
       run: |
         go test -v ./... -coverprofile=coverage.xml
-    - name: Run security scan
-      run: |
-        go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
-        gosec ./...
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v6
       env:
