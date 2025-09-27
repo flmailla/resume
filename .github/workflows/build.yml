@@ -1,26 +1,140 @@
-name: Go
+name: Deploy to VPS
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [ main ]
+
 jobs:
-  build-and-analyze:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Required for SonarQube
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.23"
-      - name: Build
-        run: go build -v ./...
-      - name: Test with Coverage
-        run: go test -v ./... -coverprofile=coverage.xml
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 
+		
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+
+    - name: Run tests with coverage
+      run: |
+        go test -v ./... -coverprofile=coverage.xml
+
+    - name: Run security scan
+      run: |
+        go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
+        gosec ./...
+		
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+
+    - name: Build application
+      run: go build -v ./... -o resume .
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: resume-binary
+        path: resume
+
+    - name: Upload static files (if exists)
+      uses: actions/upload-artifact@v3
+      with:
+        name: static-files
+        path: static/
+      continue-on-error: true
+
+    - name: Upload config files (if exists)
+      uses: actions/upload-artifact@v3
+      with:
+        name: config-files
+        path: config/
+      continue-on-error: true
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: resume-binary
+
+    - name: Download static files
+      uses: actions/download-artifact@v3
+      with:
+        name: static-files
+        path: static/
+      continue-on-error: true
+
+    - name: Download config files
+      uses: actions/download-artifact@v3
+      with:
+        name: config-files
+        path: config/
+      continue-on-error: true
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to VPS
+      run: |
+        # Copy binary
+        scp -P ${{ secrets.VPS_PORT }} myapp ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/
+
+        # Copy static files if they exist
+        if [ -d "static" ]; then
+          scp -r -P ${{ secrets.VPS_PORT }} static ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/myapp_static/
+        fi
+
+        # Copy config files if they exist  
+        if [ -d "config" ]; then
+          scp -r -P ${{ secrets.VPS_PORT }} config ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/myapp_config/
+        fi
+
+        # Run deployment script
+        ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash /home/deploy/deploy.sh'
+
+    - name: Verify deployment
+      run: |
+        sleep 10
+        # Test if the application is responding
+        curl -f https://apim.maillard.icu || exit 1
+
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "Deployment successful!"
+        else
+          echo "Deployment failed!"
+          exit 1
+        fi
+
+    - name: Cleanup
+      if: always()
+      run: |
+        rm -f ~/.ssh/id_rsa
