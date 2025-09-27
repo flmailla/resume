@@ -40,18 +40,6 @@ jobs:
         with:
           name: resume-binary
           path: main
-      - name: Upload static files (if exists)
-        uses: actions/upload-artifact@v4
-        with:
-          name: static-files
-          path: static/
-        continue-on-error: true
-      - name: Upload config files (if exists)
-        uses: actions/upload-artifact@v4
-        with:
-          name: config-files
-          path: config/
-        continue-on-error: true
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -62,17 +50,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: resume-binary
-      - name: Download static files
-        uses: actions/download-artifact@v4
-        with:
-          name: static-files
-          path: static/
-        continue-on-error: true
-      - name: Download config files
-        uses: actions/download-artifact@v4
-        with:
-          name: config-files
-          path: config/
         continue-on-error: true
       - name: Setup SSH
         env:
@@ -90,7 +67,7 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           # Copy binary
-          scp -P $VPS_PORT resume-binary $VPS_USER@$VPS_HOST:/tmp/
+          scp -P $VPS_PORT main $VPS_USER@$VPS_HOST:/tmp/
 
           # Copy static files if they exist
           if [ -d "static" ]; then
