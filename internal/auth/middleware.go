@@ -11,6 +11,12 @@ import (
 // and redirect to the right MUX handler afterwards
 func (v *JWTValidator) AuthMiddleware(mux http.Handler) http.Handler  {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		if r.URL.Path == "/health" {
+			mux.ServeHTTP(w, r)
+			return
+		}
+
 		authHeader := r.Header.Get("Authorization")
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.WriteHeader(http.StatusUnauthorized)

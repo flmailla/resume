@@ -34,6 +34,7 @@ func main() {
 	skillHandler := handlers.NewSkillHandler(store)
 	educationHandler := handlers.NewEducationHandler(store)
 	licenceHandler := handlers.NewLicenceHandler(store)
+	healthHandler := handlers.NewHealthHandler(store)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /profiles/{profile_id}", profileHandler.GetProfile)
@@ -43,6 +44,7 @@ func main() {
 	mux.HandleFunc("GET /profiles/{profile_id}/licences", licenceHandler.GetLicencesByProfile)
 	mux.HandleFunc("GET /experiences/{experience_id}/skills", skillHandler.GetSkillsByExperience)
 	mux.HandleFunc("GET /skills", skillHandler.GetSkills)
+	mux.HandleFunc("GET /health", healthHandler.GetHealthStatus)
 
 	validator := auth.NewJWTValidator("https://login.microsoftonline.com/df111d67-4cb1-4119-9f05-4c52e5e0e150/discovery/v2.0/keys")
 	wrapped := validator.AuthMiddleware(mux)

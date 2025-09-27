@@ -55,13 +55,45 @@ func TestAuthMiddleware(t *testing.T) {
 
 			middleware.ServeHTTP(rr, req)
 
-			if rr.Code != http.StatusUnauthorized {
+			if rr.Code != tt.expectedStatus {
 				t.Errorf("expected status %d, got %d", tt.expectedStatus, rr.Code)
 			}
 
 			if tt.expectedBody != "" && rr.Body.String() != tt.expectedBody {
 				t.Errorf("expected body %q, got %q", tt.expectedBody, rr.Body.String())
 			}
+		})
+	}
+}
+
+func TestAuthMiddlewareSpecificRoute(t *testing.T) {
+	tests := []struct {
+		name             string
+		sentHeader       string
+		expectedStatus   int
+	}{
+		{
+			name: "No token needed",
+			sentHeader: "",
+			expectedStatus: http.StatusOK,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			validator := &JWTValidator{}
+			nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte("OK"))
+			})
+			middleware := validator.AuthMiddleware(nextHandler)
+
+			req := httptest.NewRequest("GET", "/health", nil)
+			rr := httptest.NewRecorder()
+			middleware.ServeHTTP(rr, req)
+
+			if rr.Code != tt.expectedStatus {
+				t.Errorf("expected status %d, got %d", tt.expectedStatus, rr.Code)
+			}
+
 		})
 	}
 }
