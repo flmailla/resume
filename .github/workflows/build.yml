@@ -52,14 +52,9 @@ jobs:
           name: resume-binary
         continue-on-error: true
       - name: Setup SSH
-        env:
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$VPS_SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Deploy to VPS
         env:
           VPS_PORT: ${{ secrets.VPS_PORT }}
@@ -67,10 +62,10 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           # Copy binary
-          scp -P $VPS_PORT -i ~/.ssh/id_rsa main $VPS_USER@$VPS_HOST:/tmp/
+          scp -o StrictHostKeyChecking=no main $VPS_USER@$VPS_HOST:/tmp/
 
           # Run deployment script
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST 'bash /home/deploy/deploy.sh'
+          ssh $VPS_USER@$VPS_HOST 'bash /home/deploy/deploy.sh'
       - name: Verify deployment
         run: |
           sleep 10
