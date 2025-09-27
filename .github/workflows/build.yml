@@ -75,28 +75,35 @@ jobs:
         path: config/
       continue-on-error: true
     - name: Setup SSH
+      env:
+        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        VPS_HOST: ${{ secrets.VPS_HOST }}
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+        echo "$VPS_SSH_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+        ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
     - name: Deploy to VPS
+      env:
+        VPS_PORT: ${{ secrets.VPS_PORT }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_HOST: ${{ secrets.VPS_HOST }}
       run: |
         # Copy binary
-        scp -P ${{ secrets.VPS_PORT }} myapp ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/
+        scp -P $VPS_PORT resume $VPS_USER@$VPS_HOST:/tmp/
 
         # Copy static files if they exist
         if [ -d "static" ]; then
-          scp -r -P ${{ secrets.VPS_PORT }} static ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/myapp_static/
+          scp -r -P $VPS_PORT static $VPS_USER@$VPS_HOST:/tmp/myapp_static/
         fi
 
         # Copy config files if they exist  
         if [ -d "config" ]; then
-          scp -r -P ${{ secrets.VPS_PORT }} config ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/myapp_config/
+          scp -r -P $VPS_POR config $VPS_USER@$VPS_HOST:/tmp/myapp_config/
         fi
 
         # Run deployment script
-        ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash /home/deploy/deploy.sh'
+        ssh -p $VPS_PORT $VPS_USER@$VPS_HOST 'bash /home/deploy/deploy.sh'
     - name: Verify deployment
       run: |
         sleep 10
