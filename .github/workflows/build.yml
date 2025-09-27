@@ -36,18 +36,18 @@ jobs:
       - name: Build application
         run: go build -v ./... -o resume .
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: resume-binary
           path: resume
       - name: Upload static files (if exists)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: static-files
           path: static/
         continue-on-error: true
       - name: Upload config files (if exists)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: config-files
           path: config/
@@ -59,17 +59,17 @@ jobs:
     environment: production
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: resume-binary
       - name: Download static files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: static-files
           path: static/
         continue-on-error: true
       - name: Download config files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: config-files
           path: config/
