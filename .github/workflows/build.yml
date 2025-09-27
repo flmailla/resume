@@ -34,12 +34,12 @@ jobs:
         with:
           go-version: "1.23"
       - name: Build application
-        run: go build -v ./... -o resume .
+        run: go build -v main.go
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: resume-binary
-          path: resume
+          path: main
       - name: Upload static files (if exists)
         uses: actions/upload-artifact@v4
         with:
