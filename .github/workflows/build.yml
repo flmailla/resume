@@ -67,17 +67,7 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           # Copy binary
-          scp -P $VPS_PORT main $VPS_USER@$VPS_HOST:/tmp/
-
-          # Copy static files if they exist
-          if [ -d "static" ]; then
-            scp -r -P $VPS_PORT static $VPS_USER@$VPS_HOST:/tmp/myapp_static/
-          fi
-
-          # Copy config files if they exist  
-          if [ -d "config" ]; then
-            scp -r -P $VPS_POR config $VPS_USER@$VPS_HOST:/tmp/myapp_config/
-          fi
+          scp -P $VPS_PORT -i ~/.ssh/id_rsa main $VPS_USER@$VPS_HOST:/tmp/
 
           # Run deployment script
           ssh -p $VPS_PORT $VPS_USER@$VPS_HOST 'bash /home/deploy/deploy.sh'
