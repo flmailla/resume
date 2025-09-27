@@ -90,7 +90,7 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           # Copy binary
-          scp -P $VPS_PORT resume $VPS_USER@$VPS_HOST:/tmp/
+          scp -P $VPS_PORT resume-binary $VPS_USER@$VPS_HOST:/tmp/
 
           # Copy static files if they exist
           if [ -d "static" ]; then
