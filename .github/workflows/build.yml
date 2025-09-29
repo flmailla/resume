@@ -60,6 +60,16 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           source: main
           target: /opt/resume/bin/
+      - name: Set permissions on VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            chmod +x /opt/resume/bin/main
+            chown ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /opt/resume/bin/main
       - name: Cleanup
         if: always()
         run: |
