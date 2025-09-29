@@ -2,8 +2,9 @@ package db
 
 import (
 	"errors"
-	"time"
 	"testing"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -22,7 +23,7 @@ func TestGetEducationsByProfile(t *testing.T) {
 					return &MockRows{
 						nextFunc: func() bool {
 							callCount++
-							return callCount <= 2 
+							return callCount <= 2
 						},
 						scanFunc: func(dest ...interface{}) error {
 							if callCount == 1 {
@@ -73,7 +74,7 @@ func TestGetEducationsByProfile(t *testing.T) {
 			},
 			want:    nil,
 			wantErr: true,
-		},{
+		}, {
 			name: "DB error",
 			mockDB: &MockDB{
 				queryFunc: func(query string, args ...interface{}) (RowsInterface, error) {
@@ -98,7 +99,7 @@ func TestGetEducationsByProfile(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetDistinctEducationsByProfile(1)
 
 			if (err != nil) != tt.wantErr {

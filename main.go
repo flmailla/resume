@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+
 	"github.com/flmailla/resume/db"
 	"github.com/flmailla/resume/handlers"
 	"github.com/flmailla/resume/internal/auth"
@@ -45,7 +46,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /profiles/{profile_id}", profileHandler.GetProfile)
-    mux.HandleFunc("GET /profiles/{profile_id}/experiences", experienceHandler.GetExperiencesByProfile)
+	mux.HandleFunc("GET /profiles/{profile_id}/experiences", experienceHandler.GetExperiencesByProfile)
 	mux.HandleFunc("GET /profiles/{profile_id}/skills", skillHandler.GetSkillsByProfile)
 	mux.HandleFunc("GET /profiles/{profile_id}/educations", educationHandler.GetEducationsByProfile)
 	mux.HandleFunc("GET /profiles/{profile_id}/licences", licenceHandler.GetLicencesByProfile)

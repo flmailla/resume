@@ -2,8 +2,9 @@ package db
 
 import (
 	"errors"
-	"time"
 	"testing"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -22,7 +23,7 @@ func TestGetLicencesByProfile(t *testing.T) {
 					return &MockRows{
 						nextFunc: func() bool {
 							callCount++
-							return callCount <= 3 
+							return callCount <= 3
 						},
 						scanFunc: func(dest ...interface{}) error {
 							if callCount == 1 {
@@ -54,27 +55,27 @@ func TestGetLicencesByProfile(t *testing.T) {
 			},
 			want: []models.Licence{
 				{
-					ID: 1, 
-					Title: "Job1", 
-					Issuer: "Company1", 
-					IssuedAt: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-					Expires: time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC), 
+					ID:          1,
+					Title:       "Job1",
+					Issuer:      "Company1",
+					IssuedAt:    time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+					Expires:     time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC),
 					LicenceType: models.LICENCE,
 				},
 				{
-					ID: 2, 
-					Title: "Job2", 
-					Issuer: "Company2", 
-					IssuedAt: time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC), 
-					Expires: time.Time{},
+					ID:          2,
+					Title:       "Job2",
+					Issuer:      "Company2",
+					IssuedAt:    time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC),
+					Expires:     time.Time{},
 					LicenceType: models.CERTIFICATION,
 				},
 				{
-					ID: 3, 
-					Title: "Job3", 
-					Issuer: "Company3", 
-					IssuedAt: time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC), 
-					Expires: time.Time{},
+					ID:          3,
+					Title:       "Job3",
+					Issuer:      "Company3",
+					IssuedAt:    time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC),
+					Expires:     time.Time{},
 					LicenceType: "",
 				},
 			},
@@ -132,7 +133,7 @@ func TestGetLicencesByProfile(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetDistinctLicencesByProfile(1)
 
 			if (err != nil) != tt.wantErr {

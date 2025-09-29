@@ -16,4 +16,3 @@ func (db *DBWrapper) QueryRow(query string, args ...interface{}) RowInterface {
 func (db *DBWrapper) Close() error {
 	return db.db.Close()
 }
-

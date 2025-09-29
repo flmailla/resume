@@ -1,27 +1,28 @@
 package auth
 
 import (
+	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/json"
+	"math/big"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 	"time"
-	"reflect"
+
 	"github.com/golang-jwt/jwt/v5"
-	"math/big"
-	"crypto/rand"
 )
 
 func TestJWTValidatorCreation(t *testing.T) {
 	url := "dummy"
 	client := &http.Client{
-			Timeout: 10 * time.Second,
-		}
+		Timeout: 10 * time.Second,
+	}
 	cache := make(map[string]*rsa.PublicKey)
-	v:= NewJWTValidator(url)
-	
+	v := NewJWTValidator(url)
+
 	t.Run("check initialization", func(t *testing.T) {
 		if v.jwksURL != url {
 			t.Errorf("expected url %s, got %s", url, v.jwksURL)
@@ -36,11 +37,10 @@ func TestJWTValidatorCreation(t *testing.T) {
 		}
 
 		if v.cacheTTL != (1 * time.Hour) {
-			t.Errorf("expected cache %d, got %d", 1 * time.Hour, v.cacheTTL)
+			t.Errorf("expected cache %d, got %d", 1*time.Hour, v.cacheTTL)
 		}
 	})
 }
-
 
 func TestFetchJWKS(t *testing.T) {
 	sampleJWKS := JWKS{

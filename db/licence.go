@@ -10,27 +10,27 @@ func (s *Store) GetDistinctLicencesByProfile(profileId int) ([]models.Licence, e
 				Where l.profile_id = ?`
 	rows, err := s.db.Query(query, profileId)
 	if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+		return nil, err
+	}
+	defer rows.Close()
 
 	var licences []models.Licence
 
 	for rows.Next() {
 		var licence models.Licence
 		if err := rows.Scan(&licence.ID,
-							&licence.Title,
-							&licence.Issuer,
-							&licence.IssuedAt,
-							&licence.Expires,
-							&licence.LicenceType); err != nil {
-				return licences, err
-			}
+			&licence.Title,
+			&licence.Issuer,
+			&licence.IssuedAt,
+			&licence.Expires,
+			&licence.LicenceType); err != nil {
+			return licences, err
+		}
 		licences = append(licences, licence)
 	}
-	 
+
 	if err = rows.Err(); err != nil {
-        return licences, err
-    }
-    return licences, nil
+		return licences, err
+	}
+	return licences, nil
 }

@@ -1,10 +1,11 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"encoding/json"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -19,38 +20,38 @@ func TestGetSkills(t *testing.T) {
 		{
 			name: models.ErrUnknown.Error(),
 			mockStore: &mockStore{
-				GetDistinctSkillsFunc: func() ([]models.Skill, error)	 {
+				GetDistinctSkillsFunc: func() ([]models.Skill, error) {
 					return []models.Skill{}, models.ErrUnknown
 				},
 			},
-			want: []models.Skill{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Skill{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrSkillsNotFetched.Error(),
 		},
 		{
 			name: "successful query with multiple skills",
 			mockStore: &mockStore{
-				GetDistinctSkillsFunc: func() ([]models.Skill, error)	 {
+				GetDistinctSkillsFunc: func() ([]models.Skill, error) {
 					return []models.Skill{
 							{
-								ID: 1, 
+								ID:   1,
 								Name: "Skill1",
 							},
 							{
-								ID: 2, 
+								ID:   2,
 								Name: "Skill2",
 							},
 						},
-					nil
+						nil
 				},
 			},
 			want: []models.Skill{
 				{
-					ID: 1, 
+					ID:   1,
 					Name: "Skill1",
 				},
 				{
-					ID: 2, 
+					ID:   2,
 					Name: "Skill2",
 				},
 			},
@@ -63,11 +64,11 @@ func TestGetSkills(t *testing.T) {
 			skillHandler := NewSkillHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /skills", skillHandler.GetSkills)
+			mux.HandleFunc("GET /skills", skillHandler.GetSkills)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/skills", nil)
-			
+			r := httptest.NewRequest("GET", "/skills", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
@@ -117,38 +118,38 @@ func TestGetSkillsByProfile(t *testing.T) {
 		{
 			name: models.ErrUnknown.Error(),
 			mockStore: &mockStore{
-				GetDistinctSkillsByProfileFunc: func(profileId int) ([]models.Skill, error)	 {
+				GetDistinctSkillsByProfileFunc: func(profileId int) ([]models.Skill, error) {
 					return []models.Skill{}, models.ErrUnknown
 				},
 			},
-			want: []models.Skill{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Skill{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrSkillsNotFetched.Error(),
 		},
 		{
 			name: "successful query with multiple skills by Profile",
 			mockStore: &mockStore{
-				GetDistinctSkillsByProfileFunc: func(profileId int) ([]models.Skill, error)	 {
+				GetDistinctSkillsByProfileFunc: func(profileId int) ([]models.Skill, error) {
 					return []models.Skill{
 							{
-								ID: 1, 
+								ID:   1,
 								Name: "Skill1",
 							},
 							{
-								ID: 2, 
+								ID:   2,
 								Name: "Skill2",
 							},
 						},
-					nil
+						nil
 				},
 			},
 			want: []models.Skill{
 				{
-					ID: 1, 
+					ID:   1,
 					Name: "Skill1",
 				},
 				{
-					ID: 2, 
+					ID:   2,
 					Name: "Skill2",
 				},
 			},
@@ -161,11 +162,11 @@ func TestGetSkillsByProfile(t *testing.T) {
 			skillHandler := NewSkillHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/skills", skillHandler.GetSkillsByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/skills", skillHandler.GetSkillsByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/1/skills", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/1/skills", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
@@ -215,38 +216,38 @@ func TestGetSkillsByExperience(t *testing.T) {
 		{
 			name: models.ErrUnknown.Error(),
 			mockStore: &mockStore{
-				GetDistinctSkillsByExperienceFunc: func(experienceId int) ([]models.Skill, error)	 {
+				GetDistinctSkillsByExperienceFunc: func(experienceId int) ([]models.Skill, error) {
 					return []models.Skill{}, models.ErrUnknown
 				},
 			},
-			want: []models.Skill{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Skill{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrSkillsNotFetched.Error(),
 		},
 		{
 			name: "successful query with multiple skills by experience",
 			mockStore: &mockStore{
-				GetDistinctSkillsByExperienceFunc: func(experienceId int) ([]models.Skill, error)	 {
+				GetDistinctSkillsByExperienceFunc: func(experienceId int) ([]models.Skill, error) {
 					return []models.Skill{
 							{
-								ID: 1, 
+								ID:   1,
 								Name: "Skill1",
 							},
 							{
-								ID: 2, 
+								ID:   2,
 								Name: "Skill2",
 							},
 						},
-					nil
+						nil
 				},
 			},
 			want: []models.Skill{
 				{
-					ID: 1, 
+					ID:   1,
 					Name: "Skill1",
 				},
 				{
-					ID: 2, 
+					ID:   2,
 					Name: "Skill2",
 				},
 			},
@@ -259,15 +260,15 @@ func TestGetSkillsByExperience(t *testing.T) {
 			skillHandler := NewSkillHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{experience_id}/skills", skillHandler.GetSkillsByExperience)
+			mux.HandleFunc("GET /profiles/{experience_id}/skills", skillHandler.GetSkillsByExperience)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/1/skills", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/1/skills", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
-				t.Errorf("expected status %d, got %d",tt.wantStatusCode, w.Code)
+				t.Errorf("expected status %d, got %d", tt.wantStatusCode, w.Code)
 			}
 
 			if w.Code == http.StatusOK {
@@ -313,12 +314,12 @@ func TestGetSkillsByExperienceWrongPathParameter(t *testing.T) {
 		{
 			name: models.ErrInvalidId.Error(),
 			mockStore: &mockStore{
-				GetDistinctSkillsByExperienceFunc: func(experienceId int) ([]models.Skill, error)	 {
+				GetDistinctSkillsByExperienceFunc: func(experienceId int) ([]models.Skill, error) {
 					return []models.Skill{}, models.ErrInvalidId
 				},
 			},
-			want: []models.Skill{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Skill{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrInvalidId.Error(),
 		},
 	}
@@ -328,11 +329,11 @@ func TestGetSkillsByExperienceWrongPathParameter(t *testing.T) {
 			skillHandler := NewSkillHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{experience_id}/skills", skillHandler.GetSkillsByExperience)
+			mux.HandleFunc("GET /profiles/{experience_id}/skills", skillHandler.GetSkillsByExperience)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/abc/skills", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/abc/skills", nil)
+
 			mux.ServeHTTP(w, r)
 
 			var got map[string]string
@@ -344,7 +345,7 @@ func TestGetSkillsByExperienceWrongPathParameter(t *testing.T) {
 			if got["error"] != tt.wantErrorMessage {
 				t.Errorf("expected error message %q, got %q", tt.wantErrorMessage, got["error"])
 			}
-		
+
 		})
 	}
 }
@@ -360,12 +361,12 @@ func TestGetSkillsByProfileWrongPathParameter(t *testing.T) {
 		{
 			name: models.ErrInvalidId.Error(),
 			mockStore: &mockStore{
-				GetDistinctSkillsByProfileFunc: func(profileId int) ([]models.Skill, error)	 {
+				GetDistinctSkillsByProfileFunc: func(profileId int) ([]models.Skill, error) {
 					return []models.Skill{}, models.ErrInvalidId
 				},
 			},
-			want: []models.Skill{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Skill{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrInvalidId.Error(),
 		},
 	}
@@ -375,11 +376,11 @@ func TestGetSkillsByProfileWrongPathParameter(t *testing.T) {
 			skillHandler := NewSkillHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/skills", skillHandler.GetSkillsByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/skills", skillHandler.GetSkillsByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/abc/skills", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/abc/skills", nil)
+
 			mux.ServeHTTP(w, r)
 
 			var got map[string]string
@@ -391,7 +392,7 @@ func TestGetSkillsByProfileWrongPathParameter(t *testing.T) {
 			if got["error"] != tt.wantErrorMessage {
 				t.Errorf("expected error message %q, got %q", tt.wantErrorMessage, got["error"])
 			}
-		
+
 		})
 	}
 }

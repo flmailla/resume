@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 	"testing"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -21,7 +22,7 @@ func TestGetSkillsByXXX(t *testing.T) {
 					return &MockRows{
 						nextFunc: func() bool {
 							callCount++
-							return callCount <= 2 
+							return callCount <= 2
 						},
 						scanFunc: func(dest ...interface{}) error {
 							if callCount == 1 {
@@ -37,8 +38,8 @@ func TestGetSkillsByXXX(t *testing.T) {
 				},
 			},
 			want: []models.Skill{
-				{ID: 1, Name: "Skill1",},
-				{ID: 2, Name: "Skill2",},
+				{ID: 1, Name: "Skill1"},
+				{ID: 2, Name: "Skill2"},
 			},
 			wantErr: false,
 		},
@@ -94,7 +95,7 @@ func TestGetSkillsByXXX(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetDistinctSkillsByProfile(1)
 
 			if (err != nil) != tt.wantErr {
@@ -119,7 +120,7 @@ func TestGetSkillsByXXX(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetDistinctSkills()
 
 			if (err != nil) != tt.wantErr {
@@ -144,7 +145,7 @@ func TestGetSkillsByXXX(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetDistinctSkillsByExperience(1)
 
 			if (err != nil) != tt.wantErr {
@@ -166,4 +167,3 @@ func TestGetSkillsByXXX(t *testing.T) {
 		})
 	}
 }
-

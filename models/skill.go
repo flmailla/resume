@@ -6,8 +6,8 @@ import "reflect"
 // @Description Skill information
 // @name Skill
 type Skill struct {
-	ID         int64       `json:"id" example:"1"`
-	Name       string      `json:"name" example:"git"`
+	ID   int64  `json:"id" example:"1"`
+	Name string `json:"name" example:"git"`
 }
 
 func SkillsEqual(a, b []Skill) bool {

@@ -2,8 +2,9 @@ package db
 
 import (
 	"errors"
-	"time"
 	"testing"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -22,7 +23,7 @@ func TestGetProfiles(t *testing.T) {
 					return &MockRows{
 						nextFunc: func() bool {
 							callCount++
-							return callCount <= 2 
+							return callCount <= 2
 						},
 						scanFunc: func(dest ...interface{}) error {
 							if callCount == 1 {
@@ -57,28 +58,28 @@ func TestGetProfiles(t *testing.T) {
 			},
 			want: []models.Profile{
 				{
-					ID: 1, 
-					FirstName: "Florent", 
-					LastName: "Maillard",
-					Pronoun: "He",
-					Email: "email@maillard.ch",
-					Location: "Switzerland",
-					PostalCode : 1000,
-					Headline: "Headline",
-					About: "About",
-					BirthDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
+					ID:         1,
+					FirstName:  "Florent",
+					LastName:   "Maillard",
+					Pronoun:    "He",
+					Email:      "email@maillard.ch",
+					Location:   "Switzerland",
+					PostalCode: 1000,
+					Headline:   "Headline",
+					About:      "About",
+					BirthDate:  time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
 				},
 				{
-					ID: 2, 
-					FirstName: "Florence", 
-					LastName: "Maillard",
-					Pronoun: "She",
-					Email: "email2@maillard.ch",
-					Location: "Switzerland",
-					PostalCode : 1000,
-					Headline: "Headline",
-					About: "About",
-					BirthDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
+					ID:         2,
+					FirstName:  "Florence",
+					LastName:   "Maillard",
+					Pronoun:    "She",
+					Email:      "email2@maillard.ch",
+					Location:   "Switzerland",
+					PostalCode: 1000,
+					Headline:   "Headline",
+					About:      "About",
+					BirthDate:  time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
 				},
 			},
 			wantErr: false,
@@ -115,7 +116,7 @@ func TestGetProfiles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetProfiles()
 
 			if (err != nil) != tt.wantErr {
@@ -167,16 +168,16 @@ func TestGetProfileById(t *testing.T) {
 				},
 			},
 			want: models.Profile{
-				ID: 1, 
-				FirstName: "Florent", 
-				LastName: "Maillard",
-				Pronoun: "He",
-				Email: "email3@maillard.ch",
-				Location: "Switzerland",
-				PostalCode : 1000,
-				Headline: "Headline",
-				About: "About",
-				BirthDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
+				ID:         1,
+				FirstName:  "Florent",
+				LastName:   "Maillard",
+				Pronoun:    "He",
+				Email:      "email3@maillard.ch",
+				Location:   "Switzerland",
+				PostalCode: 1000,
+				Headline:   "Headline",
+				About:      "About",
+				BirthDate:  time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
 			},
 			wantErr: false,
 		},
@@ -191,7 +192,7 @@ func TestGetProfileById(t *testing.T) {
 					}
 				},
 			},
-			want:    models.Profile{}, 
+			want:    models.Profile{},
 			wantErr: true,
 		},
 		{
@@ -233,7 +234,7 @@ func TestGetProfileById(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetProfileById(1)
 
 			if (err != nil) != tt.wantErr {
@@ -275,7 +276,7 @@ func TestGetProfileById(t *testing.T) {
 			if got.BirthDate != tt.want.BirthDate {
 				t.Errorf("Profile.BirthDate = %v, want %v", got.BirthDate, tt.want.BirthDate)
 			}
-			
+
 		})
 	}
 }

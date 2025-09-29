@@ -1,12 +1,13 @@
 package handlers
 
 import (
-	"time"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"encoding/json"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -21,58 +22,58 @@ func TestGetExperiencesByProfile(t *testing.T) {
 		{
 			name: "unknown error",
 			mockStore: &mockStore{
-				GetDistinctExperiencesByProfileFunc: func(profileId int) ([]models.Experience, error)	 {
+				GetDistinctExperiencesByProfileFunc: func(profileId int) ([]models.Experience, error) {
 					return []models.Experience{}, errors.New("unknown error")
 				},
 			},
-			want: []models.Experience{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Experience{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrExperiencesNotFetched.Error(),
 		},
 		{
 			name: "successful query with multiple educations",
 			mockStore: &mockStore{
-				GetDistinctExperiencesByProfileFunc: func(profileId int) ([]models.Experience, error)	 {
+				GetDistinctExperiencesByProfileFunc: func(profileId int) ([]models.Experience, error) {
 					return []models.Experience{
 							{
-								ID: 1, 
-								Title: "Job1", 
-								Company: "Company1", 
-								StartDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-								EndDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-								Location: "Switzerland",
+								ID:          1,
+								Title:       "Job1",
+								Company:     "Company1",
+								StartDate:   time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+								EndDate:     time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+								Location:    "Switzerland",
 								Description: "A super job",
 							},
 							{
-								ID: 2, 
-								Title: "Job2", 
-								Company: "Company3", 
-								StartDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-								EndDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-								Location: "Switzerland",
+								ID:          2,
+								Title:       "Job2",
+								Company:     "Company3",
+								StartDate:   time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+								EndDate:     time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+								Location:    "Switzerland",
 								Description: "A terrific one",
 							},
 						},
-					nil
+						nil
 				},
 			},
 			want: []models.Experience{
 				{
-					ID: 1,
-					Title: "Job1", 
-					Company: "Company1", 
-					StartDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-					EndDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-					Location: "Switzerland",
+					ID:          1,
+					Title:       "Job1",
+					Company:     "Company1",
+					StartDate:   time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+					EndDate:     time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+					Location:    "Switzerland",
 					Description: "A super job",
 				},
 				{
-					ID: 2, 
-					Title: "Job2", 
-					Company: "Company3", 
-					StartDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-					EndDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-					Location: "Switzerland",
+					ID:          2,
+					Title:       "Job2",
+					Company:     "Company3",
+					StartDate:   time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+					EndDate:     time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+					Location:    "Switzerland",
 					Description: "A terrific one",
 				},
 			},
@@ -85,11 +86,11 @@ func TestGetExperiencesByProfile(t *testing.T) {
 			educationHandler := NewExperienceHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/experiences", educationHandler.GetExperiencesByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/experiences", educationHandler.GetExperiencesByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/1/experiences", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/1/experiences", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
@@ -160,12 +161,12 @@ func TestGetExperiencesByProfileWrongPathParameter(t *testing.T) {
 		{
 			name: models.ErrInvalidId.Error(),
 			mockStore: &mockStore{
-				GetDistinctExperiencesByProfileFunc: func(profileId int) ([]models.Experience, error)	 {
+				GetDistinctExperiencesByProfileFunc: func(profileId int) ([]models.Experience, error) {
 					return []models.Experience{}, models.ErrInvalidId
 				},
 			},
-			want: []models.Experience{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Experience{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrInvalidId.Error(),
 		},
 	}
@@ -175,11 +176,11 @@ func TestGetExperiencesByProfileWrongPathParameter(t *testing.T) {
 			experienceHandler := NewExperienceHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/experiences", experienceHandler.GetExperiencesByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/experiences", experienceHandler.GetExperiencesByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/abc/experiences", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/abc/experiences", nil)
+
 			mux.ServeHTTP(w, r)
 
 			var got map[string]string
@@ -191,7 +192,7 @@ func TestGetExperiencesByProfileWrongPathParameter(t *testing.T) {
 			if got["error"] != tt.wantErrorMessage {
 				t.Errorf("expected error message %q, got %q", tt.wantErrorMessage, got["error"])
 			}
-		
+
 		})
 	}
 }

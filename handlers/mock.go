@@ -1,17 +1,17 @@
 package handlers
 
-import (	
+import (
 	"github.com/flmailla/resume/models"
 )
 
 type mockStore struct {
-	GetDistinctEducationsByProfileFunc     func(profileId int) ([]models.Education, error)	
-	GetDistinctExperiencesByProfileFunc    func(profileId int) ([]models.Experience, error)	
-	GetDistinctLicencesByProfileFunc       func(profileId int) ([]models.Licence, error)
-	GetProfileFunc                         func(profileId int) (*models.Profile, error)
-	GetDistinctSkillsFunc                  func() ([]models.Skill, error)
-	GetDistinctSkillsByProfileFunc         func(profileId int) ([]models.Skill, error)
-	GetDistinctSkillsByExperienceFunc      func(experienceId int) ([]models.Skill, error)
+	GetDistinctEducationsByProfileFunc  func(profileId int) ([]models.Education, error)
+	GetDistinctExperiencesByProfileFunc func(profileId int) ([]models.Experience, error)
+	GetDistinctLicencesByProfileFunc    func(profileId int) ([]models.Licence, error)
+	GetProfileFunc                      func(profileId int) (*models.Profile, error)
+	GetDistinctSkillsFunc               func() ([]models.Skill, error)
+	GetDistinctSkillsByProfileFunc      func(profileId int) ([]models.Skill, error)
+	GetDistinctSkillsByExperienceFunc   func(experienceId int) ([]models.Skill, error)
 }
 
 func (m *mockStore) GetDistinctEducationsByProfile(profileId int) ([]models.Education, error) {
@@ -62,4 +62,3 @@ func (m *mockStore) GetDistinctSkillsByExperience(experienceId int) ([]models.Sk
 	}
 	return nil, models.ErrNotImplemented
 }
-

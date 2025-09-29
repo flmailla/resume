@@ -8,26 +8,26 @@ func (s *Store) GetDistinctSkills() ([]models.Skill, error) {
 	query := "SELECT DISTINCT id, name FROM skill"
 	rows, err := s.db.Query(query)
 	if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+		return nil, err
+	}
+	defer rows.Close()
 
 	var skills []models.Skill
 
 	for rows.Next() {
 		var skill models.Skill
 		if err := rows.Scan(
-			&skill.ID, 
+			&skill.ID,
 			&skill.Name); err != nil {
-				return skills, err
-			}
+			return skills, err
+		}
 		skills = append(skills, skill)
 	}
-	 
+
 	if err = rows.Err(); err != nil {
-        return skills, err
-    }
-    return skills, nil
+		return skills, err
+	}
+	return skills, nil
 }
 
 func (s *Store) GetDistinctSkillsByProfile(profileId int) ([]models.Skill, error) {
@@ -37,24 +37,24 @@ func (s *Store) GetDistinctSkillsByProfile(profileId int) ([]models.Skill, error
 				Where e.profile_id = ?`
 	rows, err := s.db.Query(query, profileId)
 	if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+		return nil, err
+	}
+	defer rows.Close()
 
 	var skills []models.Skill
 
 	for rows.Next() {
 		var skill models.Skill
-		if err := rows.Scan(&skill.ID,&skill.Name); err != nil {
-				return skills, err
-			}
+		if err := rows.Scan(&skill.ID, &skill.Name); err != nil {
+			return skills, err
+		}
 		skills = append(skills, skill)
 	}
-	 
+
 	if err = rows.Err(); err != nil {
-        return skills, err
-    }
-    return skills, nil
+		return skills, err
+	}
+	return skills, nil
 }
 
 func (s *Store) GetDistinctSkillsByExperience(experienceId int) ([]models.Skill, error) {
@@ -64,22 +64,22 @@ func (s *Store) GetDistinctSkillsByExperience(experienceId int) ([]models.Skill,
 				Where e.id = ?`
 	rows, err := s.db.Query(query, experienceId)
 	if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+		return nil, err
+	}
+	defer rows.Close()
 
 	var skills []models.Skill
 
 	for rows.Next() {
 		var skill models.Skill
-		if err := rows.Scan(&skill.ID,&skill.Name); err != nil {
-				return skills, err
-			}
+		if err := rows.Scan(&skill.ID, &skill.Name); err != nil {
+			return skills, err
+		}
 		skills = append(skills, skill)
 	}
-	 
+
 	if err = rows.Err(); err != nil {
-        return skills, err
-    }
-    return skills, nil
+		return skills, err
+	}
+	return skills, nil
 }

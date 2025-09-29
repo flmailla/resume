@@ -1,14 +1,15 @@
 package auth
 
 import (
-	"github.com/golang-jwt/jwt/v5"
-	"fmt"
-	"net/http"
 	"crypto/rsa"
-	"time"
-	"math/big"
-	"encoding/json"
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"math/big"
+	"net/http"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // List of Json Web Key Sets
@@ -30,7 +31,6 @@ type JWK struct {
 type Claims struct {
 	jwt.RegisteredClaims
 }
-
 
 // JWT validator components
 type JWTValidator struct {
@@ -129,7 +129,6 @@ func (v *JWTValidator) getPublicKey(kid string) (*rsa.PublicKey, error) {
 	return nil, fmt.Errorf("key with ID %s not found", kid)
 }
 
-
 // Validate the token signature
 func (v *JWTValidator) keyFunc(token *jwt.Token) (interface{}, error) {
 	if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
@@ -144,22 +143,20 @@ func (v *JWTValidator) keyFunc(token *jwt.Token) (interface{}, error) {
 	return v.getPublicKey(kid)
 }
 
-
 // Validate custom claims in the JWT token
 func (v *JWTValidator) validateCustomClaims(claims *Claims) error {
 	return nil
 }
 
-
-// Globally check the validity of a JWT token 
+// Globally check the validity of a JWT token
 func (v *JWTValidator) verifyToken(tokenString string) error {
 	claims := &Claims{}
-	token, err := jwt.ParseWithClaims(tokenString, 
-		claims, 
-		v.keyFunc, 
-		jwt.WithAudience(aud), 
+	token, err := jwt.ParseWithClaims(tokenString,
+		claims,
+		v.keyFunc,
+		jwt.WithAudience(aud),
 		jwt.WithIssuer(iss),
-		jwt.WithExpirationRequired() )
+		jwt.WithExpirationRequired())
 	if err != nil {
 		return fmt.Errorf("token validation failed: %w", err)
 	}

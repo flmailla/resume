@@ -1,6 +1,6 @@
 package handlers
 
-import (	
+import (
 	"github.com/flmailla/resume/models"
 )
 

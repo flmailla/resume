@@ -10,25 +10,25 @@ func (s *Store) GetDistinctEducationsByProfile(profileId int) ([]models.Educatio
 				Where e.profile_id = ?`
 	rows, err := s.db.Query(query, profileId)
 	if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+		return nil, err
+	}
+	defer rows.Close()
 
 	var educations []models.Education
 
 	for rows.Next() {
 		var education models.Education
 		if err := rows.Scan(&education.ID,
-							&education.Title,
-							&education.Issued,
-							&education.Description); err != nil {
-				return educations, err
-			}
+			&education.Title,
+			&education.Issued,
+			&education.Description); err != nil {
+			return educations, err
+		}
 		educations = append(educations, education)
 	}
-	 
+
 	if err = rows.Err(); err != nil {
-        return educations, err
-    }
-    return educations, nil
+		return educations, err
+	}
+	return educations, nil
 }

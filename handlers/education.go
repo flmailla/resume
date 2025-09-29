@@ -3,8 +3,9 @@ package handlers
 import (
 	"net/http"
 	"strconv"
-	"github.com/flmailla/resume/models"
+
 	"github.com/flmailla/resume/logger"
+	"github.com/flmailla/resume/models"
 )
 
 type EducationHandler struct {
@@ -15,7 +16,7 @@ func NewEducationHandler(store storeHandler) *EducationHandler {
 	return &EducationHandler{store: store}
 }
 
-// @Summary Get a profile educations 
+// @Summary Get a profile educations
 // @Description Retrieve all the education lines for a given profile
 // @Tags Education
 // @Tags Profile

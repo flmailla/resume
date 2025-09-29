@@ -1,13 +1,14 @@
 package handlers
 
 import (
-	"time"
+	"encoding/json"
 	"errors"
-	"reflect"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
-	"encoding/json"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -22,44 +23,44 @@ func TestGetProfile(t *testing.T) {
 		{
 			name: "unknown error",
 			mockStore: &mockStore{
-				GetProfileFunc: func(profileId int) (*models.Profile, error)	 {
+				GetProfileFunc: func(profileId int) (*models.Profile, error) {
 					return &models.Profile{}, errors.New("unknown error")
 				},
 			},
-			want: &models.Profile{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             &models.Profile{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrProfileNotFetched.Error(),
 		},
 		{
 			name: "successful query with multiple profiles",
 			mockStore: &mockStore{
-				GetProfileFunc: func(profileId int) (*models.Profile, error)	 {
+				GetProfileFunc: func(profileId int) (*models.Profile, error) {
 					return &models.Profile{
-							ID: 1, 
-							FirstName: "FN1", 
-							LastName: "LN1",
-							BirthDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
-							Pronoun: "He",
-							Email: "email@maillard.ch",
-							Location: "Switzerland",
+							ID:         1,
+							FirstName:  "FN1",
+							LastName:   "LN1",
+							BirthDate:  time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+							Pronoun:    "He",
+							Email:      "email@maillard.ch",
+							Location:   "Switzerland",
 							PostalCode: 1000,
-							Headline: "Headline",
-							About: "about",
+							Headline:   "Headline",
+							About:      "about",
 						},
-					nil
+						nil
 				},
 			},
 			want: &models.Profile{
-					ID: 1, 
-					FirstName: "FN1", 
-					LastName: "LN1",
-					BirthDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
-					Pronoun: "He",
-					Email: "email@maillard.ch",
-					Location: "Switzerland",
-					PostalCode: 1000,
-					Headline: "Headline",
-					About: "about",
+				ID:         1,
+				FirstName:  "FN1",
+				LastName:   "LN1",
+				BirthDate:  time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+				Pronoun:    "He",
+				Email:      "email@maillard.ch",
+				Location:   "Switzerland",
+				PostalCode: 1000,
+				Headline:   "Headline",
+				About:      "about",
 			},
 			wantStatusCode: http.StatusOK,
 		},
@@ -70,11 +71,11 @@ func TestGetProfile(t *testing.T) {
 			profileHandler := NewProfileHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}", profileHandler.GetProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}", profileHandler.GetProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/1", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/1", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
@@ -89,7 +90,7 @@ func TestGetProfile(t *testing.T) {
 					t.Fatalf("failed to unmarshal response body: %v", err)
 				}
 
-				if ! reflect.DeepEqual(got , tt.want) {
+				if !reflect.DeepEqual(got, tt.want) {
 					t.Errorf("Store.GetProfile() got user %+v, want %+v", got, tt.want)
 				}
 			} else {
@@ -108,7 +109,6 @@ func TestGetProfile(t *testing.T) {
 	}
 }
 
-
 func TestGetProfileWrongPathParameter(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -120,12 +120,12 @@ func TestGetProfileWrongPathParameter(t *testing.T) {
 		{
 			name: models.ErrInvalidId.Error(),
 			mockStore: &mockStore{
-				GetProfileFunc: func(profileId int) (*models.Profile, error)	 {
+				GetProfileFunc: func(profileId int) (*models.Profile, error) {
 					return &models.Profile{}, models.ErrInvalidId
 				},
 			},
-			want: &models.Profile{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             &models.Profile{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrInvalidId.Error(),
 		},
 	}
@@ -135,11 +135,11 @@ func TestGetProfileWrongPathParameter(t *testing.T) {
 			profileHandler := NewProfileHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}", profileHandler.GetProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}", profileHandler.GetProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/abc", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/abc", nil)
+
 			mux.ServeHTTP(w, r)
 
 			var got map[string]string
@@ -151,7 +151,7 @@ func TestGetProfileWrongPathParameter(t *testing.T) {
 			if got["error"] != tt.wantErrorMessage {
 				t.Errorf("expected error message %q, got %q", tt.wantErrorMessage, got["error"])
 			}
-		
+
 		})
 	}
 }

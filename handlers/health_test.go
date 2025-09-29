@@ -1,23 +1,23 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"encoding/json"
 )
 
 func TestGetHealth(t *testing.T) {
 	tests := []struct {
-		name             string
-		mockStore        *mockStore
-		wantStatusCode   int
+		name              string
+		mockStore         *mockStore
+		wantStatusCode    int
 		wantStatusMessage string
 	}{
 		{
-			name: "Retrieve status",
-			mockStore: nil,
-			wantStatusCode: http.StatusOK,
+			name:              "Retrieve status",
+			mockStore:         nil,
+			wantStatusCode:    http.StatusOK,
 			wantStatusMessage: "healthy",
 		},
 	}
@@ -27,11 +27,11 @@ func TestGetHealth(t *testing.T) {
 			healthHandler := NewHealthHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /health", healthHandler.GetHealthStatus)
+			mux.HandleFunc("GET /health", healthHandler.GetHealthStatus)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/health", nil)
-			
+			r := httptest.NewRequest("GET", "/health", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
@@ -51,4 +51,3 @@ func TestGetHealth(t *testing.T) {
 		})
 	}
 }
-

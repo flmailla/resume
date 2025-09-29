@@ -81,17 +81,17 @@ func TestWriteJSON(t *testing.T) {
 
 func TestWriteJSONInvalidPayload(t *testing.T) {
 	rr := httptest.NewRecorder()
-	
+
 	// Channels cannot be marshaled to JSON
 	invalidPayload := make(chan int)
-	
+
 	writeJSON(rr, http.StatusOK, invalidPayload)
-	
+
 	// The function should handle the error and return 500
 	if rr.Code != http.StatusInternalServerError {
 		t.Errorf("writeJSON() with invalid payload status = %v, want %v", rr.Code, http.StatusInternalServerError)
 	}
-	
+
 	body := strings.TrimSpace(rr.Body.String())
 	if body != "Internal Server Error" {
 		t.Errorf("writeJSON() with invalid payload body = %v, want %v", body, "Internal Server Error")

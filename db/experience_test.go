@@ -2,8 +2,9 @@ package db
 
 import (
 	"errors"
-	"time"
 	"testing"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -22,7 +23,7 @@ func TestGetExperiencesByProfile(t *testing.T) {
 					return &MockRows{
 						nextFunc: func() bool {
 							callCount++
-							return callCount <= 2 
+							return callCount <= 2
 						},
 						scanFunc: func(dest ...interface{}) error {
 							if callCount == 1 {
@@ -49,23 +50,23 @@ func TestGetExperiencesByProfile(t *testing.T) {
 			},
 			want: []models.Experience{
 				{
-					ID: 1, 
-					Title: "Job1", 
-					Company: "Company1", 
-					StartDate: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
-					EndDate: time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC), 
-					Location: "Lausanne",
+					ID:          1,
+					Title:       "Job1",
+					Company:     "Company1",
+					StartDate:   time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+					EndDate:     time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC),
+					Location:    "Lausanne",
 					Description: "Just a job",
-					Skills: []models.Skill{}},
+					Skills:      []models.Skill{}},
 				{
-					ID: 2, 
-					Title: "Job2", 
-					Company: "Company2", 
-					StartDate: time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC), 
-					EndDate: time.Time{},
-					Location: "Sion",
+					ID:          2,
+					Title:       "Job2",
+					Company:     "Company2",
+					StartDate:   time.Date(2026, 1, 10, 23, 0, 0, 0, time.UTC),
+					EndDate:     time.Time{},
+					Location:    "Sion",
 					Description: "Just another job",
-					Skills: []models.Skill{}},
+					Skills:      []models.Skill{}},
 			},
 			wantErr: false,
 		},
@@ -121,7 +122,7 @@ func TestGetExperiencesByProfile(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			store := NewStore(tt.mockDB)
-			
+
 			got, err := store.GetDistinctExperiencesByProfile(1)
 
 			if (err != nil) != tt.wantErr {
