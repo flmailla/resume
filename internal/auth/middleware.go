@@ -3,13 +3,14 @@ package auth
 import (
 	"net/http"
 	"strings"
+
 	"github.com/flmailla/resume/models"
 )
 
 // Middleware used by net/http
 // used to check the request authorization
 // and redirect to the right MUX handler afterwards
-func (v *JWTValidator) AuthMiddleware(mux http.Handler) http.Handler  {
+func (v *JWTValidator) AuthMiddleware(mux http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.URL.Path == "/health" {
@@ -23,19 +24,19 @@ func (v *JWTValidator) AuthMiddleware(mux http.Handler) http.Handler  {
 
 		if authHeader == "" {
 			w.Write([]byte(models.ErrNoTokenSent.Error()))
-            return
+			return
 		}
 
 		const prefix = "Bearer "
 		if !strings.HasPrefix(authHeader, prefix) {
 			w.Write([]byte(models.ErrNotBearer.Error()))
-            return
+			return
 		}
 
 		token := strings.TrimPrefix(authHeader, prefix)
 		if token == "" {
 			w.Write([]byte(models.ErrUnauthorized.Error()))
-            return
+			return
 		}
 
 		err := v.verifyToken(token)

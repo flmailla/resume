@@ -1,12 +1,13 @@
 package handlers
 
 import (
-	"time"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"encoding/json"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -21,23 +22,23 @@ func TestGetEducationsByProfile(t *testing.T) {
 		{
 			name: "unknown error",
 			mockStore: &mockStore{
-				GetDistinctEducationsByProfileFunc: func(profileId int) ([]models.Education, error)	 {
+				GetDistinctEducationsByProfileFunc: func(profileId int) ([]models.Education, error) {
 					return []models.Education{}, errors.New("unknown error")
 				},
 			},
-			want: []models.Education{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Education{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrEducationsNotFetched.Error(),
 		},
 		{
 			name: "successful query with multiple educations",
 			mockStore: &mockStore{
-				GetDistinctEducationsByProfileFunc: func(profileId int) ([]models.Education, error)	 {
+				GetDistinctEducationsByProfileFunc: func(profileId int) ([]models.Education, error) {
 					return []models.Education{
 							{ID: 1, Title: "University", Issued: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), Description: "A university journey"},
 							{ID: 2, Title: "University again", Issued: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), Description: "Another university journey"},
 						},
-					nil
+						nil
 				},
 			},
 			want: []models.Education{
@@ -53,11 +54,11 @@ func TestGetEducationsByProfile(t *testing.T) {
 			educationHandler := NewEducationHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/educations", educationHandler.GetEducationsByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/educations", educationHandler.GetEducationsByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/1/educations", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/1/educations", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
@@ -96,7 +97,6 @@ func TestGetEducationsByProfile(t *testing.T) {
 	}
 }
 
-
 func TestGetEducationsByProfileWrongPathParameter(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -108,12 +108,12 @@ func TestGetEducationsByProfileWrongPathParameter(t *testing.T) {
 		{
 			name: models.ErrInvalidId.Error(),
 			mockStore: &mockStore{
-				GetDistinctEducationsByProfileFunc: func(profileId int) ([]models.Education, error)	 {
+				GetDistinctEducationsByProfileFunc: func(profileId int) ([]models.Education, error) {
 					return []models.Education{}, models.ErrInvalidId
 				},
 			},
-			want: []models.Education{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Education{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrInvalidId.Error(),
 		},
 	}
@@ -123,11 +123,11 @@ func TestGetEducationsByProfileWrongPathParameter(t *testing.T) {
 			educationHandler := NewEducationHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/educations", educationHandler.GetEducationsByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/educations", educationHandler.GetEducationsByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/abc/educations", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/abc/educations", nil)
+
 			mux.ServeHTTP(w, r)
 
 			var got map[string]string
@@ -139,7 +139,7 @@ func TestGetEducationsByProfileWrongPathParameter(t *testing.T) {
 			if got["error"] != tt.wantErrorMessage {
 				t.Errorf("expected error message %q, got %q", tt.wantErrorMessage, got["error"])
 			}
-		
+
 		})
 	}
 }

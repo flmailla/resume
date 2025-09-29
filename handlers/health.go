@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
+
 	"github.com/flmailla/resume/logger"
 )
 
@@ -11,7 +12,7 @@ type HealthHandler struct {
 }
 
 type responseStatus struct {
-	Status	    string
+	Status string
 }
 
 func NewHealthHandler(store storeHandler) *HealthHandler {
@@ -33,10 +34,9 @@ func (h *HealthHandler) GetHealthStatus(w http.ResponseWriter, r *http.Request) 
 	logger.Logger.Info("health endpoint requested")
 
 	response := map[string]string{
-        "Status": "healthy",
-    }
-    
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(response)
+		"Status": "healthy",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
-	

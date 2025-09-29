@@ -3,8 +3,9 @@ package handlers
 import (
 	"net/http"
 	"strconv"
-	"github.com/flmailla/resume/models"
+
 	"github.com/flmailla/resume/logger"
+	"github.com/flmailla/resume/models"
 )
 
 type SkillHandler struct {
@@ -15,7 +16,7 @@ func NewSkillHandler(store storeHandler) *SkillHandler {
 	return &SkillHandler{store: store}
 }
 
-// @Summary Get all the skills 
+// @Summary Get all the skills
 // @Description Retrieve all the skills in the database
 // @Tags Skills
 // @Accept json
@@ -36,7 +37,7 @@ func (h *SkillHandler) GetSkills(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, profile)
 }
 
-// @Summary Get a profile skills 
+// @Summary Get a profile skills
 // @Description Retrieve all the skills for a given profile
 // @Tags Skills
 // @Tags Profile
@@ -50,7 +51,7 @@ func (h *SkillHandler) GetSkills(w http.ResponseWriter, r *http.Request) {
 // @Router /profiles/{profile_id}/skills [get]
 func (h *SkillHandler) GetSkillsByProfile(w http.ResponseWriter, r *http.Request) {
 	profileId, err := strconv.Atoi(r.PathValue("profile_id"))
-	if err!= nil {
+	if err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
 		logger.Logger.Warn("Skill endpoint", models.ErrInvalidId.Error(), profileId)
 		return
@@ -64,7 +65,7 @@ func (h *SkillHandler) GetSkillsByProfile(w http.ResponseWriter, r *http.Request
 	writeJSON(w, http.StatusOK, skills)
 }
 
-// @Summary Get the experience skills 
+// @Summary Get the experience skills
 // @Description Retrieve all the skills for a given experience
 // @Tags Skills
 // @Tags Experience
@@ -78,7 +79,7 @@ func (h *SkillHandler) GetSkillsByProfile(w http.ResponseWriter, r *http.Request
 // @Router /experience/{experience_id}/skills [get]
 func (h *SkillHandler) GetSkillsByExperience(w http.ResponseWriter, r *http.Request) {
 	experienceId, err := strconv.Atoi(r.PathValue("experience_id"))
-	if err!= nil {
+	if err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
 		logger.Logger.Warn("Skill endpoint", models.ErrInvalidId.Error(), experienceId)
 		return

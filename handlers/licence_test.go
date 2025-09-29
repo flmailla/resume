@@ -1,12 +1,13 @@
 package handlers
 
 import (
-	"time"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"encoding/json"
+	"time"
+
 	"github.com/flmailla/resume/models"
 )
 
@@ -21,50 +22,50 @@ func TestGetLicencesByProfile(t *testing.T) {
 		{
 			name: "unknown error",
 			mockStore: &mockStore{
-				GetDistinctLicencesByProfileFunc: func(profileId int) ([]models.Licence, error)	 {
+				GetDistinctLicencesByProfileFunc: func(profileId int) ([]models.Licence, error) {
 					return []models.Licence{}, errors.New("unknown error")
 				},
 			},
-			want: []models.Licence{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Licence{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrLicencesNotFetched.Error(),
 		},
 		{
 			name: "successful query with multiple licences",
 			mockStore: &mockStore{
-				GetDistinctLicencesByProfileFunc: func(profileId int) ([]models.Licence, error)	 {
+				GetDistinctLicencesByProfileFunc: func(profileId int) ([]models.Licence, error) {
 					return []models.Licence{
 							{
-								ID: 1, 
-								Title: "Licence1", 
-								Issuer: "Issuer1", 
-								IssuedAt: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
+								ID:          1,
+								Title:       "Licence1",
+								Issuer:      "Issuer1",
+								IssuedAt:    time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
 								LicenceType: models.CERTIFICATION,
 							},
 							{
-								ID: 2, 
-								Title: "Licence2", 
-								Issuer: "Issuer2", 
-								IssuedAt: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+								ID:          2,
+								Title:       "Licence2",
+								Issuer:      "Issuer2",
+								IssuedAt:    time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
 								LicenceType: models.LICENCE,
 							},
 						},
-					nil
+						nil
 				},
 			},
 			want: []models.Licence{
 				{
-					ID: 1, 
-					Title: "Licence1", 
-					Issuer: "Issuer1", 
-					IssuedAt: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC), 
+					ID:          1,
+					Title:       "Licence1",
+					Issuer:      "Issuer1",
+					IssuedAt:    time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
 					LicenceType: models.CERTIFICATION,
 				},
 				{
-					ID: 2, 
-					Title: "Licence2", 
-					Issuer: "Issuer2", 
-					IssuedAt: time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
+					ID:          2,
+					Title:       "Licence2",
+					Issuer:      "Issuer2",
+					IssuedAt:    time.Date(2025, 1, 10, 23, 0, 0, 0, time.UTC),
 					LicenceType: models.LICENCE,
 				},
 			},
@@ -77,11 +78,11 @@ func TestGetLicencesByProfile(t *testing.T) {
 			licenceHandler := NewLicenceHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/licences", licenceHandler.GetLicencesByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/licences", licenceHandler.GetLicencesByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/1/licences", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/1/licences", nil)
+
 			mux.ServeHTTP(w, r)
 
 			if w.Code != tt.wantStatusCode {
@@ -131,12 +132,12 @@ func TestGetLicencesByProfileWrongPathParameter(t *testing.T) {
 		{
 			name: models.ErrInvalidId.Error(),
 			mockStore: &mockStore{
-				GetDistinctLicencesByProfileFunc: func(profileId int) ([]models.Licence, error)	 {
+				GetDistinctLicencesByProfileFunc: func(profileId int) ([]models.Licence, error) {
 					return []models.Licence{}, models.ErrInvalidId
 				},
 			},
-			want: []models.Licence{},
-			wantStatusCode: http.StatusInternalServerError,
+			want:             []models.Licence{},
+			wantStatusCode:   http.StatusInternalServerError,
 			wantErrorMessage: models.ErrInvalidId.Error(),
 		},
 	}
@@ -146,11 +147,11 @@ func TestGetLicencesByProfileWrongPathParameter(t *testing.T) {
 			licenceHandler := NewLicenceHandler(tt.mockStore)
 
 			mux := http.NewServeMux()
-    		mux.HandleFunc("GET /profiles/{profile_id}/licences", licenceHandler.GetLicencesByProfile)
+			mux.HandleFunc("GET /profiles/{profile_id}/licences", licenceHandler.GetLicencesByProfile)
 
 			w := httptest.NewRecorder()
-		    r := httptest.NewRequest("GET", "/profiles/abc/licences", nil)
-			
+			r := httptest.NewRequest("GET", "/profiles/abc/licences", nil)
+
 			mux.ServeHTTP(w, r)
 
 			var got map[string]string
@@ -162,7 +163,7 @@ func TestGetLicencesByProfileWrongPathParameter(t *testing.T) {
 			if got["error"] != tt.wantErrorMessage {
 				t.Errorf("expected error message %q, got %q", tt.wantErrorMessage, got["error"])
 			}
-		
+
 		})
 	}
 }

@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -52,10 +53,9 @@ func InitDB() error {
 	return nil
 }
 
-
 // Initiates the DB tables
 func createTables() error {
-    query := `CREATE TABLE IF NOT EXISTS profile (
+	query := `CREATE TABLE IF NOT EXISTS profile (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
 		firstname TEXT NOT NULL,
         lastname TEXT NOT NULL,
@@ -67,7 +67,7 @@ func createTables() error {
 		about TEXT NOT NULL,
         birthdate DATETIME NOT NULL
     );
-	
+
 	CREATE TABLE IF NOT EXISTS education (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
@@ -103,7 +103,7 @@ func createTables() error {
 		profile_id INTEGER,
 		FOREIGN KEY (profile_id) REFERENCES profile(id)
     );
-	
+
 	CREATE TABLE IF NOT EXISTS skill_experience (
         experience_id INTEGER,
 		skill_id INTEGER,
@@ -112,15 +112,15 @@ func createTables() error {
     	FOREIGN KEY (skill_id) REFERENCES skill(id)
     );`
 
-    _, err := DB.Exec(query)
-    return err
+	_, err := DB.Exec(query)
+	return err
 }
 
 // Populates the static DB
-// Could be a JSON file 
-func fulfillTables() error{
+// Could be a JSON file
+func fulfillTables() error {
 
-	 query := `INSERT OR IGNORE INTO profile (
+	query := `INSERT OR IGNORE INTO profile (
 	 	id,
         firstname,
         lastname,
@@ -143,7 +143,7 @@ func fulfillTables() error{
 		"There is no subsitute for hard Work./n- Thomas Edison",
 		"1990-08-21 00:00:00"
 	);
-	
+
 	INSERT OR IGNORE INTO education (
         id,
 		title,
@@ -230,7 +230,7 @@ func fulfillTables() error{
 		"2025-03-01 00:00:00",
 		1
 	);
-	
+
 	INSERT OR IGNORE INTO skill (
         id,
 		name
@@ -313,7 +313,7 @@ func fulfillTables() error{
 		26,
 		"KSql"
 	);
-	
+
 	INSERT OR IGNORE INTO skill_experience (
         experience_id,
 		skill_id
@@ -444,7 +444,7 @@ func fulfillTables() error{
 		5,
 		19
 	);
-	
+
 	INSERT OR IGNORE INTO licence (
         id,
 		title,
@@ -495,7 +495,7 @@ func fulfillTables() error{
 		"2025-10-01 00:00:00",
 		1
 	);
-	
+
 	INSERT OR IGNORE INTO licence (
         id,
 		title,
@@ -516,6 +516,6 @@ func fulfillTables() error{
 		1
 	);`
 
-    _, err := DB.Exec(query)
-    return err
+	_, err := DB.Exec(query)
+	return err
 }

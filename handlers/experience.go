@@ -3,8 +3,9 @@ package handlers
 import (
 	"net/http"
 	"strconv"
-	"github.com/flmailla/resume/models"
+
 	"github.com/flmailla/resume/logger"
+	"github.com/flmailla/resume/models"
 )
 
 type ExperienceHandler struct {
@@ -15,7 +16,7 @@ func NewExperienceHandler(store storeHandler) *ExperienceHandler {
 	return &ExperienceHandler{store: store}
 }
 
-// @Summary Get a profile experiences 
+// @Summary Get a profile experiences
 // @Description Retrieve all the experiences for a given profile
 // @Tags Experience
 // @Tags Profile
@@ -33,7 +34,7 @@ func (h *ExperienceHandler) GetExperiencesByProfile(w http.ResponseWriter, r *ht
 	logger.Logger.Info("health endpoint requested")
 
 	profileId, err := strconv.Atoi(r.PathValue("profile_id"))
-	if err!= nil {
+	if err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
 		logger.Logger.Warn("Experience endpoint", models.ErrInvalidId.Error(), profileId)
 		return

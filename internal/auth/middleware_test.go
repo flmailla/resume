@@ -4,39 +4,40 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
 	"github.com/flmailla/resume/models"
 )
 
 func TestAuthMiddleware(t *testing.T) {
 	tests := []struct {
-		name             string
-		sentHeader       string
-		expectedStatus   int
-		expectedBody     string
+		name           string
+		sentHeader     string
+		expectedStatus int
+		expectedBody   string
 	}{
 		{
-			name: "No Authorization Header",
-			sentHeader: "",
+			name:           "No Authorization Header",
+			sentHeader:     "",
 			expectedStatus: http.StatusUnauthorized,
-			expectedBody: models.ErrNoTokenSent.Error(),
+			expectedBody:   models.ErrNoTokenSent.Error(),
 		},
 		{
-			name: "No Bearer in Authorization Header",
-			sentHeader: "xxxx",
+			name:           "No Bearer in Authorization Header",
+			sentHeader:     "xxxx",
 			expectedStatus: http.StatusUnauthorized,
-			expectedBody: models.ErrNotBearer.Error(),
+			expectedBody:   models.ErrNotBearer.Error(),
 		},
 		{
-			name: "Token is empty",
-			sentHeader: "Bearer ",
+			name:           "Token is empty",
+			sentHeader:     "Bearer ",
 			expectedStatus: http.StatusUnauthorized,
-			expectedBody: models.ErrUnauthorized.Error(),
+			expectedBody:   models.ErrUnauthorized.Error(),
 		},
 		{
-			name: "With Authorization Header but invalid token",
-			sentHeader: "Bearer invalid",
+			name:           "With Authorization Header but invalid token",
+			sentHeader:     "Bearer invalid",
 			expectedStatus: http.StatusUnauthorized,
-			expectedBody: "",
+			expectedBody:   "",
 		},
 	}
 	for _, tt := range tests {
@@ -68,13 +69,13 @@ func TestAuthMiddleware(t *testing.T) {
 
 func TestAuthMiddlewareSpecificRoute(t *testing.T) {
 	tests := []struct {
-		name             string
-		sentHeader       string
-		expectedStatus   int
+		name           string
+		sentHeader     string
+		expectedStatus int
 	}{
 		{
-			name: "No token needed",
-			sentHeader: "",
+			name:           "No token needed",
+			sentHeader:     "",
 			expectedStatus: http.StatusOK,
 		},
 	}

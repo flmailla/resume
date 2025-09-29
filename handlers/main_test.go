@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"testing"
-	"log/slog"
-	"github.com/flmailla/resume/logger"
 	"io"
+	"log/slog"
+	"testing"
+
+	"github.com/flmailla/resume/logger"
 )
 
 func TestMain(m *testing.M) {
