@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/flmailla/resume/models"
+	"github.com/flmailla/resume/logger"
 )
 
 type SkillHandler struct {
@@ -28,6 +29,7 @@ func (h *SkillHandler) GetSkills(w http.ResponseWriter, r *http.Request) {
 	profile, err := h.store.GetDistinctSkills()
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": models.ErrSkillsNotFetched.Error()})
+		logger.Logger.Warn(err.Error())
 		return
 	}
 
@@ -50,6 +52,7 @@ func (h *SkillHandler) GetSkillsByProfile(w http.ResponseWriter, r *http.Request
 	profileId, err := strconv.Atoi(r.PathValue("profile_id"))
 	if err!= nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
+		logger.Logger.Warn("Skill endpoint", models.ErrInvalidId.Error(), profileId)
 		return
 	}
 	skills, err := h.store.GetDistinctSkillsByProfile(profileId)
@@ -77,6 +80,7 @@ func (h *SkillHandler) GetSkillsByExperience(w http.ResponseWriter, r *http.Requ
 	experienceId, err := strconv.Atoi(r.PathValue("experience_id"))
 	if err!= nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
+		logger.Logger.Warn("Skill endpoint", models.ErrInvalidId.Error(), experienceId)
 		return
 	}
 	experiences, err := h.store.GetDistinctSkillsByExperience(experienceId)

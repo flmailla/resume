@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/flmailla/resume/models"
+	"github.com/flmailla/resume/logger"
 )
 
 type ExperienceHandler struct {
@@ -28,9 +29,13 @@ func NewExperienceHandler(store storeHandler) *ExperienceHandler {
 // @Param profile_id path int true "Profile ID"
 // @Security OAuth2Application
 func (h *ExperienceHandler) GetExperiencesByProfile(w http.ResponseWriter, r *http.Request) {
+
+	logger.Logger.Info("health endpoint requested")
+
 	profileId, err := strconv.Atoi(r.PathValue("profile_id"))
 	if err!= nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
+		logger.Logger.Warn("Experience endpoint", models.ErrInvalidId.Error(), profileId)
 		return
 	}
 	profile, err := h.store.GetDistinctExperiencesByProfile(profileId)

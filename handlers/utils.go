@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 	"encoding/json"
-	"log"
+	"github.com/flmailla/resume/logger"
 )
 
 func writeJSON(w http.ResponseWriter, status int, payload any) {
@@ -11,7 +11,7 @@ func writeJSON(w http.ResponseWriter, status int, payload any) {
 	
 	data, err := json.Marshal(payload)
 	if err != nil {
-		log.Printf("Failed to marshal JSON: %v", err)
+		logger.Logger.Error("Failed to marshal JSON")
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"github.com/flmailla/resume/db"
 	"github.com/flmailla/resume/handlers"
 	"github.com/flmailla/resume/internal/auth"
+	"github.com/flmailla/resume/logger"
 )
 
 // @title Resume API
@@ -23,10 +23,17 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
+
+	if err := logger.InitLogger(); err != nil {
+		panic("Failed to initialize logger")
+	}
+
 	if err := db.InitDB(); err != nil {
-		log.Fatalf("Failed to initialize database: %v", err)
+		logger.Logger.Error("Failed to initialize database", "error", err)
 	}
 	defer db.CloseDB()
+
+	logger.Logger.Info("Application started")
 
 	store := db.NewStoreFromSQLDB(db.DB)
 	profileHandler := handlers.NewProfileHandler(store)

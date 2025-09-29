@@ -36,7 +36,7 @@ func CloseDB() error {
 // Open a DB connection
 func InitDB() error {
 	var err error
-	DB, err = sql.Open("sqlite3", "./myapp.db")
+	DB, err = sql.Open("sqlite3", "./resume.db")
 	if err != nil {
 		return fmt.Errorf("database connection failed: %v", err)
 	}
