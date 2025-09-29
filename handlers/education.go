@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/flmailla/resume/models"
+	"github.com/flmailla/resume/logger"
 )
 
 type EducationHandler struct {
@@ -29,12 +30,14 @@ func NewEducationHandler(store storeHandler) *EducationHandler {
 // @Security OAuth2Application
 func (h *EducationHandler) GetEducationsByProfile(w http.ResponseWriter, r *http.Request) {
 	profileId, err := strconv.Atoi(r.PathValue("profile_id"))
-	if err!= nil {
+	if err != nil {
+		logger.Logger.Error(err.Error())
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
 		return
 	}
 	educations, err := h.store.GetDistinctEducationsByProfile(profileId)
 	if err != nil {
+		logger.Logger.Error(err.Error())
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": models.ErrEducationsNotFetched.Error(), "detail": err.Error()})
 		return
 	}

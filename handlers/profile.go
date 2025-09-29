@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/flmailla/resume/models"
+	"github.com/flmailla/resume/logger"
 )
 
 type ProfileHandler struct {
@@ -30,6 +31,7 @@ func (h *ProfileHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
     profileId, err := strconv.Atoi(r.PathValue("profile_id"))
 	if err!= nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
+		logger.Logger.Warn("Profile endpoint", models.ErrInvalidId.Error(), profileId)
 		return
 	}
 	profile, err := h.store.GetProfileById(profileId)

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/flmailla/resume/models"
+	"github.com/flmailla/resume/logger"
 )
 
 type LicenceHandler struct {
@@ -31,6 +32,7 @@ func (h *LicenceHandler) GetLicencesByProfile(w http.ResponseWriter, r *http.Req
 	profileId, err := strconv.Atoi(r.PathValue("profile_id"))
 	if err!= nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": models.ErrInvalidId.Error()})
+		logger.Logger.Warn("Licence endpoint", models.ErrInvalidId.Error(), profileId)
 		return
 	}
 	licences, err := h.store.GetDistinctLicencesByProfile(profileId)

@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"encoding/json"
+	"github.com/flmailla/resume/logger"
 )
 
 type HealthHandler struct {
@@ -28,6 +29,9 @@ func NewHealthHandler(store storeHandler) *HealthHandler {
 // @Failure 404 {object} models.ErrorResponse
 // @Router /health [get]
 func (h *HealthHandler) GetHealthStatus(w http.ResponseWriter, r *http.Request) {
+
+	logger.Logger.Info("health endpoint requested")
+
 	response := map[string]string{
         "Status": "healthy",
     }
