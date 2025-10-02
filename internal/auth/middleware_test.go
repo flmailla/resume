@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/flmailla/resume/models"
 )
 
 func TestAuthMiddleware(t *testing.T) {
@@ -19,25 +17,25 @@ func TestAuthMiddleware(t *testing.T) {
 			name:           "No Authorization Header",
 			sentHeader:     "",
 			expectedStatus: http.StatusUnauthorized,
-			expectedBody:   models.ErrNoTokenSent.Error(),
+			expectedBody:   ascii401,
 		},
 		{
 			name:           "No Bearer in Authorization Header",
 			sentHeader:     "xxxx",
 			expectedStatus: http.StatusUnauthorized,
-			expectedBody:   models.ErrNotBearer.Error(),
+			expectedBody:   ascii401,
 		},
 		{
 			name:           "Token is empty",
 			sentHeader:     "Bearer ",
 			expectedStatus: http.StatusUnauthorized,
-			expectedBody:   models.ErrUnauthorized.Error(),
+			expectedBody:   ascii401,
 		},
 		{
 			name:           "With Authorization Header but invalid token",
 			sentHeader:     "Bearer invalid",
-			expectedStatus: http.StatusUnauthorized,
-			expectedBody:   "",
+			expectedStatus: http.StatusForbidden,
+			expectedBody:   ascii403,
 		},
 	}
 	for _, tt := range tests {
