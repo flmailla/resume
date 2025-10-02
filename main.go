@@ -2,6 +2,9 @@ package main
 
 import (
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/flmailla/resume/db"
 	"github.com/flmailla/resume/handlers"
@@ -24,6 +27,15 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGTERM, syscall.SIGINT)
+
+	go func() {
+		sig := <-sigs
+		logger.Logger.Error("Received signal: %s, shutting down...", sig)
+		os.Exit(0)
+	}()
 
 	if err := logger.InitLogger(); err != nil {
 		panic("Failed to initialize logger")
