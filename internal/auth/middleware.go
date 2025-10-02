@@ -1,10 +1,9 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
-
-	"github.com/flmailla/resume/models"
 )
 
 // Middleware used by net/http
@@ -19,29 +18,35 @@ func (v *JWTValidator) AuthMiddleware(mux http.Handler) http.Handler {
 		}
 
 		authHeader := r.Header.Get("Authorization")
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.WriteHeader(http.StatusUnauthorized)
 
 		if authHeader == "" {
-			w.Write([]byte(models.ErrNoTokenSent.Error()))
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprint(w, ascii401)
 			return
 		}
 
 		const prefix = "Bearer "
 		if !strings.HasPrefix(authHeader, prefix) {
-			w.Write([]byte(models.ErrNotBearer.Error()))
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprint(w, ascii401)
 			return
 		}
 
 		token := strings.TrimPrefix(authHeader, prefix)
 		if token == "" {
-			w.Write([]byte(models.ErrUnauthorized.Error()))
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprint(w, ascii401)
 			return
 		}
 
 		err := v.verifyToken(token)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusForbidden)
+			fmt.Fprint(w, ascii403)
 			return
 		}
 
