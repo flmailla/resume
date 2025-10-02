@@ -12,6 +12,6 @@ Todo
 Curl the available APIs
 ```bash
 curl --request GET \
-  --url http://fqdn_to_define/profiles/1 \
+  --url http://apim.maillard.icu/profiles/1 \
   --header 'authorization: Bearer xxxxx'
 ```
